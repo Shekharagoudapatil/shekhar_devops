@@ -21,14 +21,12 @@ jobs:
     steps:
 
     - name: Checkout Code
-      uses: actions/checkout@v4
-
-   
+      uses: actions/checkout@v4 
 
     - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v4
+      uses: aws-actions/configure-aws-credentials@v4.1.0
       with:
-        role-to-assume: arn:aws:iam::998105437841:role/oidc-provider-rule
+        role-to-assume: ${{ vars.AWS_IAM_ROLE }}
         aws-region: us-west-2
 
     - name: Verify AWS Identity
