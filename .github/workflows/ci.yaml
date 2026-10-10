@@ -1,11 +1,7 @@
-name: CI Pipeline
+name: AWS OIDC CI Pipeline
 
 on:
   push:
-    branches:
-      - main
-
-  pull_request:
     branches:
       - main
 
@@ -20,15 +16,26 @@ jobs:
 
     steps:
 
-    - name: Checkout Code
-      uses: actions/checkout@v4 
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v4.1.0
-      with:
-        aws-region: us-west-2
-        role-to-assume: "arn:aws:iam::552993617597:role/github-action-role"
-        
+      - name: Show GitHub Context
+        run: |
+          echo "Repository: ${{ github.repository }}"
+          echo "Branch: ${{ github.ref }}"
+          echo "Event: ${{ github.event_name }}"
 
-    - name: Verify AWS Identity
-      run: aws sts get-caller-identity
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::552993617597:role/github-action-role
+          aws-region: us-west-2
+          role-session-name: GitHubActions
+
+      - name: Verify AWS Identity
+        run: |
+          aws sts get-caller-identity
+
+      - name: List S3 Buckets
+        run: |
+          aws s3 ls
